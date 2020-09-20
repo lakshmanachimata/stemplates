@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
@@ -16,14 +17,18 @@ func registerLink(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	fmt.Printf("hello, లక్ష్మణ \n")
 
+	fmt.Printf("hello, లక్ష్మణ \n")
+	var configdatastr []byte
+	var configdata ConfigData
+	configdatastr = readConfig("config.json")
+	json.Unmarshal(configdatastr, &configdata)
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/api/requestLogin", loginLink)
 	router.HandleFunc("/api/registerMe", registerLink)
 
 	s := &http.Server{
-		Addr:           ":4500",
+		Addr:           ":" + configdata.ServerPort,
 		Handler:        router,
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
