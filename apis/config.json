@@ -4,5 +4,6 @@
 	"dbport" : "27017",
 	"instance_type" : "local",
     "domain" : "localhost:3000",
-    "serverport" : "4500"
+    "serverport" : "4500",
+    "dbtimeout" : 30
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
@@ -19,10 +18,7 @@ func registerLink(w http.ResponseWriter, r *http.Request) {
 func main() {
 
 	fmt.Printf("hello, లక్ష్మణ \n")
-	var configdatastr []byte
-	var configdata ConfigData
-	configdatastr = readConfig("config.json")
-	json.Unmarshal(configdatastr, &configdata)
+	var configdata ConfigData = readConfig("config.json")
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/api/requestLogin", loginLink)
 	router.HandleFunc("/api/registerMe", registerLink)
@@ -34,6 +30,7 @@ func main() {
 		WriteTimeout:   10 * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
+	ConnectDB()
 	err := s.ListenAndServe()
 	if err != nil {
 		fmt.Printf("Server failed: ", err.Error())

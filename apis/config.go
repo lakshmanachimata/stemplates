@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -13,9 +14,10 @@ type ConfigData struct {
 	Instance   string
 	Domain     string
 	ServerPort string
+	dbTimeOut  uint32
 }
 
-func readConfig(fileName string) []byte {
+func readConfig(fileName string) ConfigData {
 	jsonFile, err := os.Open(fileName)
 
 	if err != nil {
@@ -23,6 +25,7 @@ func readConfig(fileName string) []byte {
 	}
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 	defer jsonFile.Close()
-
-	return byteValue
+	var configdata ConfigData
+	json.Unmarshal(byteValue, &configdata)
+	return configdata
 }
