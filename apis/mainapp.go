@@ -3,40 +3,28 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"time"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 )
 
-func loginLink(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Welcome Login!")
-}
-func registerLink(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Welcome Register!")
-}
+var router *gin.Engine
 
 func main() {
+	router := gin.Default()
 
-	fmt.Printf("hello, లక్ష్మణ \n")
 	var configdata ConfigData = readConfig("config.json")
-	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/api/requestLogin", loginLink)
-	router.HandleFunc("/api/registerMe", registerLink)
+	fmt.Printf("hello, లక్ష్మణ \t" + configdata.ServerPort)
 
-	s := &http.Server{
-		Addr:           ":" + configdata.ServerPort,
-		Handler:        router,
-		ReadTimeout:    10 * time.Second,
-		WriteTimeout:   10 * time.Second,
-		MaxHeaderBytes: 1 << 20,
-	}
 	ConnectDB()
-	err := s.ListenAndServe()
-	if err != nil {
-		fmt.Printf("Server failed: ", err.Error())
-	} else {
-		fmt.Printf("Server Started")
-	}
-	// http.ListenAndServe(":6000", nil)
 
+	router.GET("/api/login/user/:name", func(c *gin.Context) {
+		name := c.Param("name")
+		c.String(http.StatusOK, "Hello %s", name)
+	})
+	router.GET("/api/register/user/:name", func(c *gin.Context) {
+		name := c.Param("name")
+		c.String(http.StatusOK, "Hello %s", name)
+	})
+
+	router.Run(":" + configdata.ServerPort)
 }
